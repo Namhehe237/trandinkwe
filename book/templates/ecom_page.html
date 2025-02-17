@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Page</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .section {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .item {
+            background: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .item h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .item p {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .item strong {
+            color: var(--secondary-color);
+        }
+
+        .cart-list {
+            list-style: none;
+        }
+
+        .cart-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-list li:last-child {
+            border-bottom: none;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #64748b;
+            padding: 2rem;
+        }
+
+        .customer-info {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Add some icons */
+        .book-icon::before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f02d";
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .price-icon::before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f155";
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .stock-icon::before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f494";
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-shopping-cart"></i> Modern E-Commerce</h1>
+    </header>
+
+    <div class="container">
+        <!-- Books Section -->
+        <div class="section">
+            <h2><i class="fas fa-books"></i> Books</h2>
+            {% for book in books %}
+            <div class="item">
+                <h3 class="book-icon">{{ book.title }}</h3>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p class="price-icon"><strong>Price:</strong> ${{ book.price }}</p>
+                <p class="stock-icon"><strong>Stock:</strong> {{ book.stock }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Cart Section -->
+        <div class="section">
+            <h2><i class="fas fa-shopping-cart"></i> Cart</h2>
+            {% if cart %}
+            <div class="item">
+                <p><strong>Customer:</strong> {{ cart.customer.name }}</p>
+                <ul class="cart-list">
+                    {% for book in cart.book.all %}
+                    <li>
+                        <span>{{ book.title }}</span>
+                        <span>${{ book.price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart fa-2x"></i>
+                <p>Your cart is empty</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Customers Section -->
+        <div class="section">
+            <h2><i class="fas fa-users"></i> Customers</h2>
+            {% for customer in customers %}
+            <div class="item customer-info">
+                <p><i class="fas fa-user"></i> <strong>Name:</strong> {{ customer.name }}</p>
+                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ customer.email }}</p>
+                <p><i class="fas fa-phone"></i> <strong>Phone:</strong> {{ customer.phone }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
